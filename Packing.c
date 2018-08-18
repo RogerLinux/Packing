@@ -4,32 +4,32 @@
 #include <time.h>
 #include "./Roger_Packing.c"
 
-#define item 10
+#define item 6
 #define rand_mode 1
 #define opt_max 64
 #define PI 3.1415926
 
 int main(int argc, char** argv){
-    int i, num, iter, dmin;
+    int i, num, iter = 32, dmin;
     float *ctr_x, *ctr_y, *R, *ctr_x_opt, *ctr_y_opt;
     float L, W, M_r, m_r, target_area=0;
-    float cov_opt, R_th_Max, R_th_min, R_th_d;
+    float cov_opt, R_th_Max = 1, R_th_min = 0.5, R_th_d = 0.02;
 
-    if(argc!=item && argc!=(item+1)){
-      printf("Usage: Packing num Max_Radius min_radius length width R_th_Max R_th_min R_th_decreasing iterations [written_file]\n");
-      printf("Return values:\n0 is OK\n1 is wrong argument\n2 is cannot write the output file\n");
-      return 1;
+    if(argc != item && argc != item + 1){
+	printf("Usage: Packing num Max_Radius min_radius length width [written_file]\n");
+	printf("This app will arrange the circles which have distinct radii to max out the coverage in a rectangular area\n\n");
+	printf("num: number of circles\n");
+	printf("Max_Radius and min_radius: Maximum radius and minimum radius respectively, Packing will randomly assign each circle between min and Max radii\n");
+	printf("length: the length of the area\n");
+	printf("width: the width of the area\n\n");
+	printf("Return values:\n0 is OK\n1 is wrong argument\n2 is cannot write the output file\n");
+	return 1;
                            }
-    num=atoi(argv[1]);
-    iter=atoi(argv[9]);
-    L=atof(argv[4]);
-    W=atof(argv[5]);
+    num = atoi(argv[1]);
+    L = atof(argv[4]);
+    W = atof(argv[5]);
 
     dmin=(int)(L+W)/2000;
-
-    R_th_Max=atof(argv[6]);
-    R_th_min=atof(argv[7]);
-    R_th_d=atof(argv[8]);
 
     ctr_x=malloc(num*sizeof(float));
     ctr_y=malloc(num*sizeof(float));
@@ -52,8 +52,6 @@ int main(int argc, char** argv){
     printf("Quantity: %d\n", num);
     printf("Radii: %.2f - %.2f\n", m_r, M_r);
     printf("%.2f * %.2f\n", L, W);
-    printf("Iterations: %d\n", iter);
-    printf("Theshold: %.2f - %.2f\n", R_th_min, R_th_Max);
 
     if(argc==(item+1))printf("Output file: %s\n", argv[item]);
 
@@ -64,7 +62,7 @@ int main(int argc, char** argv){
                      
     printf("Optimal Coverage= %.4f\nPerformance: %.4f\n", cov_opt, cov_opt/target_area);
 
-    if(argc==(item+1)){
+    if(argc == item + 1){
 
        FILE* p;
        p=fopen(argv[item], "w");
